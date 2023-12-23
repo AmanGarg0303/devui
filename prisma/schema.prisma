@@ -9,3 +9,11 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id         Int      @id @default(autoincrement())
+  name       String?
+  email      String
+  password   String? // it is optional because while using oauth, password is not required
+  created_at DateTime @default(now())
+}
