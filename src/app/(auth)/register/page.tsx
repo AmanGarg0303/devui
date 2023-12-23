@@ -7,8 +7,12 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
 import AuthNav from "@/components/AuthNav";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { loadingSvg } from "@/svgs/svgs";
 
 export default function Register() {
+  const router = useRouter();
   const [authState, setAuthState] = useState({
     name: "",
     email: "",
@@ -16,8 +20,23 @@ export default function Register() {
     password_confirmation: "",
   });
 
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<AuthErrorType>({});
+
   const submit = () => {
-    console.log(authState);
+    setLoading(true);
+    axios
+      .post(`/api/auth/register`, authState)
+      .then((res) => {
+        const response = res.data;
+        if (response.status == 200) {
+          router.push(`/login?message=${response.message}`);
+        } else if (response.status == 400) {
+          setErrors(response.errors);
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -50,6 +69,7 @@ export default function Register() {
                   setAuthState({ ...authState, name: e.target.value })
                 }
               />
+              <span className="text-red-500 text-sm">{errors?.name}</span>
             </div>
 
             <div className="mt-4">
@@ -63,6 +83,7 @@ export default function Register() {
                   setAuthState({ ...authState, email: e.target.value })
                 }
               />
+              <span className="text-red-500 text-sm">{errors?.email}</span>
             </div>
 
             <div className="mt-4">
@@ -75,6 +96,7 @@ export default function Register() {
                   setAuthState({ ...authState, password: e.target.value })
                 }
               />
+              <span className="text-red-500 text-sm">{errors?.password}</span>
             </div>
 
             <div className="mt-4">
@@ -93,8 +115,8 @@ export default function Register() {
             </div>
 
             <div className="mt-4">
-              <Button onClick={submit} className="w-full">
-                Register
+              <Button onClick={submit} className="w-full" disabled={loading}>
+                {loading ? <>{loadingSvg}</> : "Register"}
               </Button>
             </div>
 
