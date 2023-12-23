@@ -14,11 +14,15 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export default function SignOutBtn() {
+  const logout = () => {
+    signOut({ callbackUrl: "/login", redirect: true });
+  };
+
   return (
     <div>
       <AlertDialog>
         <AlertDialogTrigger>
-          <Button>Sign Out</Button>
+          <Button variant="destructive">Sign Out</Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -30,11 +34,7 @@ export default function SignOutBtn() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => signOut({ callbackUrl: "/login", redirect: true })}
-            >
-              Sign Out
-            </AlertDialogAction>
+            <AlertDialogAction onClick={logout}>Sign Out</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
