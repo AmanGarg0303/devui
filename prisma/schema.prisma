@@ -15,5 +15,16 @@ model User {
   name       String?
   email      String   @unique
   password   String? // it is optional because while using oauth, password is not required
+  post       Post[]
   created_at DateTime @default(now())
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [user_id], references: [id])
+  user_id     Int
+  title       String   @db.VarChar(60)
+  description String
+  image       String   @db.VarChar(100)
+  created_at  DateTime @default(now())
 }
