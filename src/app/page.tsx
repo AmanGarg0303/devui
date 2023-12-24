@@ -3,7 +3,7 @@ import { getPosts } from "@/lib/serverMethods";
 import PostCard from "@/components/PostCard";
 
 export default async function Home() {
-  const posts = await getPosts();
+  const posts: Array<PostType> = await getPosts();
 
   return (
     <div>

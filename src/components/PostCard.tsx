@@ -1,6 +1,7 @@
 "use client";
 import { formatDate } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function PostCard({ post }: { post: PostType }) {
   return (
@@ -21,12 +22,14 @@ export default function PostCard({ post }: { post: PostType }) {
             unoptimized
           />
 
-          <div className="p-5">
-            <h1 className="text-2xl line-clamp-1 font-semibold">
-              {post.title}
-            </h1>
-            <p className="text-sm line-clamp-2">{post.description}</p>
-          </div>
+          <Link href={`/post/${post.id}`}>
+            <div className="p-5">
+              <h1 className="text-2xl line-clamp-1 font-semibold">
+                {post.title}
+              </h1>
+              <p className="text-sm line-clamp-2">{post.description}</p>
+            </div>
+          </Link>
         </div>
       </div>
     </div>

@@ -12,7 +12,7 @@ import { getUserPosts } from "@/lib/serverMethods";
 export default async function ProfilePage() {
   const session: CustomSession | null = await getServerSession(authOptions);
 
-  const posts = await getUserPosts();
+  const posts: Array<PostType> = await getUserPosts();
 
   return (
     <div>
