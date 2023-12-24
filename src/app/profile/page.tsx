@@ -6,21 +6,8 @@ import {
 } from "../api/auth/[...nextauth]/authOptions";
 import SignOutBtn from "@/components/SignOutBtn";
 import AddPost from "@/components/AddPost";
-import { headers } from "next/headers";
 import UserPostCard from "@/components/UserPostCard";
-
-async function getUserPosts() {
-  const res = await fetch(`${process.env.APP_URL}/api/user/post`, {
-    headers: headers(),
-  });
-
-  if (!res.ok) {
-    throw new Error("Could not get user posts!");
-  }
-
-  const response = await res.json();
-  return response?.data;
-}
+import { getUserPosts } from "@/lib/serverMethods";
 
 export default async function ProfilePage() {
   const session: CustomSession | null = await getServerSession(authOptions);
