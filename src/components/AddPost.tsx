@@ -15,8 +15,12 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import axios from "axios";
 import { loadingSvg } from "@/svgs/svgs";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function AddPost({ user_id }: { user_id: string }) {
+  const router = useRouter();
+  const { toast } = useToast();
   const [sheetOpen, setSheetOpen] = useState<boolean>(false);
 
   const [postState, setPostState] = useState({
@@ -46,7 +50,12 @@ export default function AddPost({ user_id }: { user_id: string }) {
       .then((res) => {
         const response = res.data;
         if (response.status == 200) {
-          alert(response.message);
+          toast({
+            title: response.message,
+            className: "bg-green-300",
+          });
+          setSheetOpen(false);
+          router.refresh();
         } else if (response.status == 400) {
           setErrors(response.errors);
         }
