@@ -6,6 +6,30 @@ import vine, { errors } from "@vinejs/vine";
 import { writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 import { join } from "path";
+import prisma from "@/database/prisma.config";
+
+export async function GET(request: NextRequest) {
+  try {
+    const posts = await prisma.post.findMany({
+      orderBy: {
+        created_at: "desc",
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json({ status: 200, data: posts });
+  } catch (error) {
+    if (error instanceof errors.E_VALIDATION_ERROR) {
+      return NextResponse.json({ status: 400, errors: error.messages });
+    }
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,7 +68,7 @@ export async function POST(request: NextRequest) {
 
     await writeFile(`${uploadDir}/${fileName}`, buffer);
 
-    await prisma?.post.create({
+    await prisma.post.create({
       data: {
         title: validatedData.title,
         description: validatedData.description,
