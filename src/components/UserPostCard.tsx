@@ -1,8 +1,7 @@
 "use client";
 import { formatDate } from "@/lib/utils";
 import Image from "next/image";
-import { Trash2Icon } from "lucide-react";
-import { Button } from "./ui/button";
+import PostDeleteBtn from "./PostDeleteBtn";
 
 export default function UserPostCard({ post }: { post: PostType }) {
   return (
@@ -14,9 +13,7 @@ export default function UserPostCard({ post }: { post: PostType }) {
               <h1 className="text-2xl font-bold">{post.user.name}</h1>
               <p>{formatDate(post.created_at)}</p>
             </div>
-            <Button size="icon" variant="destructive">
-              <Trash2Icon />
-            </Button>
+            <PostDeleteBtn id={post.id} />
           </div>
 
           <Image

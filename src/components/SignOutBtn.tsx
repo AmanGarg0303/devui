@@ -1,6 +1,6 @@
 "use client";
 import { signOut } from "next-auth/react";
-import { Button } from "./ui/button";
+import { LogOutIcon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,6 +12,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 export default function SignOutBtn() {
   const logout = () => {
@@ -22,7 +23,10 @@ export default function SignOutBtn() {
     <div>
       <AlertDialog>
         <AlertDialogTrigger>
-          <Button variant="destructive">Sign Out</Button>
+          <div className={buttonVariants({ variant: "destructive" })}>
+            <LogOutIcon className="mr-2 h-4 w-4" />
+            Sign out
+          </div>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
