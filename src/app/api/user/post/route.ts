@@ -7,9 +7,22 @@ import { writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 import { join } from "path";
 import prisma from "@/database/prisma.config";
+import { getServerSession } from "next-auth";
+import {
+  authOptions,
+  CustomSession,
+} from "../../auth/[...nextauth]/authOptions";
 
+// * Get current user posts
 export async function GET(request: NextRequest) {
   try {
+    const session: CustomSession | null = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({
+        status: 400,
+        message: "Unauthorized network call",
+      });
+    }
     const posts = await prisma.post.findMany({
       orderBy: {
         created_at: "desc",
@@ -20,6 +33,9 @@ export async function GET(request: NextRequest) {
             name: true,
           },
         },
+      },
+      where: {
+        user_id: Number(session?.user?.id!),
       },
     });
 
@@ -33,6 +49,16 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // * Check if user is authenticated
+    const session: CustomSession | null = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({
+        status: 400,
+        message: "Unauthorized network call",
+      });
+    }
+
+    // * Getting formData
     const formData = await request.formData();
     const file = formData.get("image") as File | null;
 
