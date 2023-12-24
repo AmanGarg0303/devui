@@ -13,8 +13,10 @@ import React, { useState } from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
+import axios from "axios";
+import { loadingSvg } from "@/svgs/svgs";
 
-export default function AddPost() {
+export default function AddPost({ user_id }: { user_id: string }) {
   const [sheetOpen, setSheetOpen] = useState<boolean>(false);
 
   const [postState, setPostState] = useState({
@@ -23,6 +25,8 @@ export default function AddPost() {
   });
 
   const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<PostErrorType>({});
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -30,8 +34,25 @@ export default function AddPost() {
   };
 
   const submit = () => {
-    console.log(postState);
-    console.log(file);
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("title", postState.title);
+    formData.append("description", postState.description);
+    formData.append("image", file!);
+    formData.append("user_id", user_id);
+
+    axios
+      .post(`/api/user/post`, formData)
+      .then((res) => {
+        const response = res.data;
+        if (response.status == 200) {
+          alert(response.message);
+        } else if (response.status == 400) {
+          setErrors(response.errors);
+        }
+      })
+      .catch((err) => console.log("The post error is: ", err))
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -58,6 +79,7 @@ export default function AddPost() {
                 setPostState({ ...postState, title: e.target.value })
               }
             />
+            <span className="text-red-500 text-sm">{errors?.title}</span>
           </div>
 
           <div className="mt-4 ">
@@ -69,6 +91,7 @@ export default function AddPost() {
                 setPostState({ ...postState, description: e.target.value })
               }
             ></Textarea>
+            <span className="text-red-500 text-sm">{errors?.description}</span>
           </div>
 
           <div className="mt-4 ">
@@ -79,11 +102,18 @@ export default function AddPost() {
               placeholder="Your file here"
               onChange={handleFileChange}
             />
+            <span className="text-red-500 text-sm">{errors?.image}</span>
           </div>
 
           <SheetFooter className="mt-4">
-            <Button onClick={submit}>Submit</Button>
-            <Button variant="destructive" onClick={() => setSheetOpen(false)}>
+            <Button onClick={submit} disabled={loading} className="w-full">
+              {loading ? <>{loadingSvg}</> : "Submit"}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => setSheetOpen(false)}
+              className="w-full"
+            >
               Close
             </Button>
           </SheetFooter>

@@ -17,7 +17,7 @@ export default async function ProfilePage() {
         <div className="text-center">
           <h1 className="text-3xl">Hello, {session?.user?.name}</h1>
           <div className="mt-5 flex justify-center gap-4">
-            <AddPost />
+            <AddPost user_id={session?.user?.id!} />
             <SignOutBtn />
           </div>
         </div>
